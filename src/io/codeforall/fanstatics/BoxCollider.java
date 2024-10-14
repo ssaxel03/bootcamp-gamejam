@@ -1,7 +1,6 @@
 package src.io.codeforall.fanstatics;
 
 import java.awt.*;
-import java.util.Vector;
 
 public class BoxCollider {
 
