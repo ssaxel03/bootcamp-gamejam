@@ -1,16 +1,18 @@
 package src.io.codeforall.fanstatics;
 
-public enum Guns {
-    PISTOL(5,800),
-    RIFLE(10,100),
-    SHOTGUN(15,400);
+public enum GunType {
+    PISTOL(5,800,10),
+    RIFLE(10,100,15),
+    SHOTGUN(15,400,6);
 
     private int damage;
-    private int delayMs;
+    private long delayMs;
+    private int bullets;
 
-    Guns(int damage, int delayMs){
+    GunType(int damage, long delayMs, int bullets){
         this.damage = damage;
         this.delayMs = delayMs;
+        this.bullets = bullets;
     }
 
     public int getDamage(){
@@ -19,6 +21,9 @@ public enum Guns {
 
     public long getDelayMs(){
         return this.delayMs;
+    }
+    public int getBullets(){
+        return this.bullets;
     }
 
     // DEVELOP NEW GUNS TO BE BOUGHT BY THE PLAYER
