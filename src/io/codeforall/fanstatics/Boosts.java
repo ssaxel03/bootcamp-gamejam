@@ -1,0 +1,9 @@
+package src.io.codeforall.fanstatics;
+
+public enum Boosts {
+
+    // DEVELOP MEW BOOSTS TO BE DROPPED FROM ENEMIES
+    // ENUMERATOR SHOULD CONTAIN AT LEAST 3 BOOSTS
+    // IMPLEMENTATION IS NOT NEEDED BUT IS NICE
+
+}
