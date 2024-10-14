@@ -10,4 +10,21 @@ public class CollisionManager {
         this.collideables = collideables;
     }
 
+    public void checkCollisions() {
+        for(Collideable collideable : collideables) {
+            for(Collideable collideableTarget : collideables) {
+
+                if(collideable == collideableTarget) {
+                    continue;
+                }
+
+                if(collideable.getBoxCollider().getBounds().intersects(collideableTarget.getBoxCollider().getBounds())) {
+                    collideable.onCollision(collideableTarget);
+                    collideableTarget.onCollision(collideable);
+                }
+
+            }
+        }
+    }
+
 }

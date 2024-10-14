@@ -16,4 +16,8 @@ public class BoxCollider {
         this.bounds.translate(translate[0], translate[1]);
     }
 
+    public Rectangle getBounds() {
+        return this.bounds;
+    }
+
 }
