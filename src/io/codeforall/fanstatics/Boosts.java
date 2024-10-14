@@ -2,15 +2,15 @@ package src.io.codeforall.fanstatics;
 
 public enum Boosts {
 
-    HEALTH_BOOST(20),
-    SPEED(2),
-    ARMOR(50),
-    BULLETS(5),
-    RELOADTIME(0.5);
+    HEALTH_BOOST(20), //increase the health of the player
+    SPEED_BOOST(2), //increase the speed of the player
+    ARMOR_BOOST(30), //increase the armor points
+    BULLETS_BOOST(5), // increase the number of bullets
+    RELOAD_TIME_BOOST(500); //decrease the reload time
 
-    private double value;
+    private int value;
 
-    Boosts(double value){
+    Boosts(int value){
         this.value=value;
     }
 
