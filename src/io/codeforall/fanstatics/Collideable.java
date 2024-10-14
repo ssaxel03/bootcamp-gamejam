@@ -4,7 +4,7 @@ public interface Collideable {
 
     public BoxCollider getBoxCollider();
     public void onCollision(Collideable col);
-
+    public String getName();
 
 
 }

@@ -1,28 +1,31 @@
 package src.io.codeforall.fanstatics;
 
+import src.io.codeforall.fanstatics.background.Background;
+import src.io.codeforall.fanstatics.entities.Enemy;
+import src.io.codeforall.fanstatics.entities.Player;
+
 import java.util.ArrayList;
 
 public class CollisionManager {
 
-    public ArrayList<Collideable> collideables;
+    public ArrayList<Enemy> enemies;
+    private Background background;
+    public Player player;
 
-    public CollisionManager(ArrayList<Collideable> collideables) {
-        this.collideables = collideables;
+    public CollisionManager(ArrayList<Enemy> enemies, Background background, Player player) {
+        this.enemies = enemies;
+        this.background = background;
+        this.player = player;
     }
 
     public void checkCollisions() {
-        for(Collideable collideable : collideables) {
-            for(Collideable collideableTarget : collideables) {
+        for (Enemy enemy : enemies) {
 
-                if(collideable == collideableTarget) {
-                    continue;
-                }
+            System.out.println("CHECKING COLLISIONS FOR " + this.player.getName() + " AND " + enemy.getName());
 
-                if(collideable.getBoxCollider().getBounds().intersects(collideableTarget.getBoxCollider().getBounds())) {
-                    collideable.onCollision(collideableTarget);
-                    collideableTarget.onCollision(collideable);
-                }
-
+            if (this.player.getBoxCollider().getBounds().intersects(enemy.getBoxCollider().getBounds())) {
+                this.player.onCollision(enemy);
+                enemy.onCollision(this.player);
             }
         }
     }

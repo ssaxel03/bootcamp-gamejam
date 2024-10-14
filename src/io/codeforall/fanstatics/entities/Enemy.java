@@ -5,13 +5,13 @@ import src.io.codeforall.fanstatics.Collideable;
 
 import java.util.Vector;
 
-public class Enemy extends Entity{
+public class Enemy extends Entity implements Collideable{
 
     private final EnemyController enemyController;
     private int[] position;
 
     public Enemy(int x, int y) {
-        super(x, y, 5);
+        super(x, y, 5, "Enemy");
         this.enemyController = new EnemyController(
                 new Rectangle(10, 10,
                         Entity.SPRITE_SIZE,
@@ -33,10 +33,6 @@ public class Enemy extends Entity{
 
         double arrayLength = Math.sqrt( (direction[0] * direction[0]) + (direction[1] * direction[1]) );
 
-        if(arrayLength < 150) {
-            return;
-        }
-
         int[] normalizedDirection = new int[] {(int) (super.speed * direction[0] / arrayLength), (int) (this.speed * direction[1] / arrayLength)};
 
         this.enemyController.move(normalizedDirection);
@@ -44,12 +40,21 @@ public class Enemy extends Entity{
         // this.enemyController.move(new int[] {100, 0});
 
         this.position = new int[] {this.position[0] + normalizedDirection[0], this.position[1] + normalizedDirection[1] };
+        this.boxCollider.move(normalizedDirection);
 
     }
 
     @Override
     public void onCollision(Collideable col) {
         // ENEMY COLLISION METHOD
+
+        System.out.println("Enemy collided with " + col.getName());
+
         return;
+    }
+
+    @Override
+    public String getName() {
+        return super.entityName;
     }
 }
