@@ -1,7 +1,6 @@
 package src.io.codeforall.fanstatics;
 
 import java.awt.*;
-import java.util.Vector;
 
 public class BoxCollider {
 
@@ -15,6 +14,10 @@ public class BoxCollider {
 
     public void move(int[] translate) {
         this.bounds.translate(translate[0], translate[1]);
+    }
+
+    public Rectangle getBounds() {
+        return this.bounds;
     }
 
 }

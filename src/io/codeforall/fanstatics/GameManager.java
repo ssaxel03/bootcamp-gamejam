@@ -1,10 +1,12 @@
 package src.io.codeforall.fanstatics;
 
+import org.academiadecodigo.simplegraphics.graphics.Color;
 import org.academiadecodigo.simplegraphics.graphics.Rectangle;
 import org.academiadecodigo.simplegraphics.keyboard.Keyboard;
 import org.academiadecodigo.simplegraphics.keyboard.KeyboardEvent;
 import org.academiadecodigo.simplegraphics.keyboard.KeyboardEventType;
 import org.academiadecodigo.simplegraphics.keyboard.KeyboardHandler;
+import org.academiadecodigo.simplegraphics.mouse.Mouse;
 import org.academiadecodigo.simplegraphics.mouse.MouseEvent;
 import org.academiadecodigo.simplegraphics.mouse.MouseHandler;
 import src.io.codeforall.fanstatics.background.Background;
@@ -21,8 +23,11 @@ public class GameManager implements KeyboardHandler, MouseHandler {
     public final static int SCREEN_HEIGHT = 1080;
 
     private Keyboard keyboard;
+    private Mouse mouse;
 
     private Rectangle screen;
+
+    private CollisionManager collisionManager;
 
     Player player;
     ArrayList<Enemy> enemies;
@@ -30,13 +35,14 @@ public class GameManager implements KeyboardHandler, MouseHandler {
     ArrayList<Collideable> collideables;
 
     public GameManager() {
+        this.mouseInit();
         this.keyboardInit();
-        this.screen = new Rectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-        this.enemies = new ArrayList<>();
-        collideables = new ArrayList<>();
-        collideables.addAll(enemies);
-        collideables.add(player);
 
+        this.screen = new Rectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+        this.screen.setColor(Color.BLACK);
+        this.screen.fill();
+
+        this.enemies = new ArrayList<>();
     }
 
     public void start() {
@@ -44,10 +50,12 @@ public class GameManager implements KeyboardHandler, MouseHandler {
         this.player = new Player();
         enemies.add(new Enemy(10, 10));
 
+        this.collisionManager = new CollisionManager(enemies, background, player);
+
         try{
             this.gameLoop();
-        } catch(Exception e) {
-            System.out.println("Waiting");
+        } catch(InterruptedException e) {
+            System.out.println("Waiting...");
         }
 
 
@@ -56,10 +64,14 @@ public class GameManager implements KeyboardHandler, MouseHandler {
     public void gameLoop() throws InterruptedException {
         while(true) {
 
-            Thread.sleep(20);
+            Thread.sleep(50);
+
+
             for (Enemy enemy : enemies) {
                 enemy.move(player);
             }
+
+            collisionManager.checkCollisions();
 
         }
     }
@@ -91,6 +103,12 @@ public class GameManager implements KeyboardHandler, MouseHandler {
 
     }
 
+    public void mouseInit() {
+        this.mouse = new Mouse(this);
+
+        // MouseEvent move = new MouseEvent();
+    }
+
     @Override
     public void keyPressed(KeyboardEvent keyboardEvent) {
         switch(keyboardEvent.getKey()) {
@@ -118,6 +136,10 @@ public class GameManager implements KeyboardHandler, MouseHandler {
 
         this.background.move(translate);
         this.background.setOffset(newOffset);
+        this.background.getBoxCollider().move(translate);
+
+        System.out.println(this.background.getBoxCollider().bounds.getX() + " " +
+                this.background.getBoxCollider().bounds.getY());
     }
 
     @Override
