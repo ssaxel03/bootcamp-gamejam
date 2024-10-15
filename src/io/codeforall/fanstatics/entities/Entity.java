@@ -30,4 +30,8 @@ public abstract class Entity extends BoxCollider implements Collideable {
     public BoxCollider getBoxCollider() {
         return boxCollider;
     }
+
+    public String getName() {
+        return this.entityName;
+    }
 }
