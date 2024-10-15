@@ -39,10 +39,15 @@ public class Background implements Collideable {
         this.offset = newOffset;
     }
 
+    public void incOfsset(int[] translate) {
+
+    }
+
     public void move(int[] translate) {
         System.out.println("MOVED TRANSLATE: " + translate[0] + " " + translate[1]);
         this.sprite.translate(translate[0], translate[1]);
         this.sprite.fill();
+        this.boxCollider.move(translate);
 
         for(Enemy enemy : enemies) {
             enemy.move(translate);

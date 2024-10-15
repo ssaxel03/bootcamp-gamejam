@@ -17,7 +17,7 @@ public class Player extends Entity implements Collideable {
     public Player() {
         super(GameManager.SCREEN_WIDTH / 2 - Entity.SPRITE_SIZE / 2,
                 GameManager.SCREEN_HEIGHT / 2 - Entity.SPRITE_SIZE / 2,
-                2,
+                10,
                 "Player");
 
         this.playerController = new PlayerController(
@@ -27,8 +27,6 @@ public class Player extends Entity implements Collideable {
                         super.SPRITE_SIZE));
 
         this.position = new int[]{this.sprite.getX(), this.sprite.getY()};
-
-
     }
 
     public int[] getPosition() {
@@ -57,10 +55,5 @@ public class Player extends Entity implements Collideable {
         }
 
         return;
-    }
-
-    @Override
-    public String getName() {
-        return super.entityName;
     }
 }

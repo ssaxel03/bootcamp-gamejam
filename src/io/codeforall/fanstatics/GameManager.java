@@ -8,6 +8,7 @@ import org.academiadecodigo.simplegraphics.keyboard.KeyboardEventType;
 import org.academiadecodigo.simplegraphics.keyboard.KeyboardHandler;
 import org.academiadecodigo.simplegraphics.mouse.Mouse;
 import org.academiadecodigo.simplegraphics.mouse.MouseEvent;
+import org.academiadecodigo.simplegraphics.mouse.MouseEventType;
 import org.academiadecodigo.simplegraphics.mouse.MouseHandler;
 import src.io.codeforall.fanstatics.background.Background;
 import src.io.codeforall.fanstatics.entities.Enemy;
@@ -29,12 +30,16 @@ public class GameManager implements KeyboardHandler, MouseHandler {
 
     private CollisionManager collisionManager;
 
+    int[] backgroundTargetPos;
+
     Player player;
     ArrayList<Enemy> enemies;
     Background background;
     ArrayList<Collideable> collideables;
 
     public GameManager() {
+        this.backgroundTargetPos = new int[] {0, 0};
+
         this.mouseInit();
         this.keyboardInit();
 
@@ -71,6 +76,8 @@ public class GameManager implements KeyboardHandler, MouseHandler {
                 enemy.move(player);
             }
 
+            background.move(backgroundTargetPos);
+
             collisionManager.checkCollisions();
 
         }
@@ -106,7 +113,7 @@ public class GameManager implements KeyboardHandler, MouseHandler {
     public void mouseInit() {
         this.mouse = new Mouse(this);
 
-        // MouseEvent move = new MouseEvent();
+        mouse.addEventListener(MouseEventType.MOUSE_CLICKED);
     }
 
     @Override
@@ -142,6 +149,25 @@ public class GameManager implements KeyboardHandler, MouseHandler {
                 this.background.getBoxCollider().bounds.getY());
     }
 
+    public void playermoveTo(int[] clickPosition) {
+
+        // CALCULATE DIRECTION VECTOR TO CLICK POSITION
+        int[] direction = new int[] {clickPosition[0] - this.player.getPosition()[0], clickPosition[1] - this.player.getPosition()[1]};
+
+
+
+        // CALCULATE DISTANCE OF DIRECTION TO PLAYER
+        double arrayLength = Math.sqrt( (direction[0] * direction[0]) + (direction[1] * direction[1]) );
+        // CREATE NEW DIRECTION VECTOR ALWAYS WITH THE SAME SIZE
+        int[] normalizedDirection = new int[] {-1 * (int) (player.getSpeed() * direction[0] / arrayLength), -1 * (int) (this.player.getSpeed() * direction[1] / arrayLength)};
+        // MOVE ALL OF ENEMY'S COMPONENTS
+
+        this.backgroundTargetPos = this.background.get;
+
+        this.background.move(normalizedDirection);
+        this.background.getBoxCollider().move(normalizedDirection);
+    }
+
     @Override
     public void keyReleased(KeyboardEvent keyboardEvent) {
 
@@ -149,6 +175,11 @@ public class GameManager implements KeyboardHandler, MouseHandler {
 
     @Override
     public void mouseClicked(MouseEvent mouseEvent) {
+
+        int[] clickPosition = new int []{(int) mouseEvent.getX(), (int) mouseEvent.getY()};
+        System.out.println("MOUSE CLICK X: " + clickPosition[0] +
+                "MOUSE CLICK Y: " + clickPosition[1]);
+        this.playermoveTo(clickPosition);
 
     }
 

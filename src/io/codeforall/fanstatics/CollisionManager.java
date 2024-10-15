@@ -21,7 +21,7 @@ public class CollisionManager {
     public void checkCollisions() {
         for (Enemy enemy : enemies) {
 
-            System.out.println("CHECKING COLLISIONS FOR " + this.player.getName() + " AND " + enemy.getName());
+            // System.out.println("CHECKING COLLISIONS FOR " + this.player.getName() + " AND " + enemy.getName());
 
             if (this.player.getBoxCollider().getBounds().intersects(enemy.getBoxCollider().getBounds())) {
                 this.player.onCollision(enemy);
