@@ -9,7 +9,7 @@ public class Enemy extends Entity implements Collideable{
     private int[] position;
 
     public Enemy(int x, int y) {
-        super(x, y, 3, "Enemy");
+        super(x, y, 10, "Enemy");
         this.enemyController = new EnemyController(
                 new Rectangle(0, 0,
                         Entity.SPRITE_SIZE,

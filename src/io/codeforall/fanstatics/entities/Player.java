@@ -17,7 +17,7 @@ public class Player extends Entity implements Collideable {
     public Player() {
         super(GameManager.SCREEN_WIDTH / 2 - Entity.SPRITE_SIZE / 2,
                 GameManager.SCREEN_HEIGHT / 2 - Entity.SPRITE_SIZE / 2,
-                15,
+                25,
                 "Player");
 
         this.playerController = new PlayerController(

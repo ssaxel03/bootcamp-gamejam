@@ -6,6 +6,10 @@ public class Main {
 
         GameManager game = new GameManager();
 
-        game.play();
+        InputManagerThread inputManagerThread = new InputManagerThread(game);
+        inputManagerThread.start();
+
+        GameManagerThread gameManagerThread = new GameManagerThread(game);
+        gameManagerThread.start();
     }
 }

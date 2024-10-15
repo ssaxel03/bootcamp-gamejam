@@ -33,19 +33,11 @@ public class CollisionManager {
         }
     }
 
-    public boolean isInside(int[] clickPosition) {
-
-        Rectangle player = new Rectangle(clickPosition[0], clickPosition[1], Entity.SPRITE_SIZE, Entity.SPRITE_SIZE);
-
-        return this.background.getBoxCollider().bounds.contains(player);
-
-    }
-
     public boolean isInside(int clickPositionX, int clickPositionY) {
 
         Rectangle player = new Rectangle(clickPositionX, clickPositionY, Entity.SPRITE_SIZE, Entity.SPRITE_SIZE);
 
-        return this.background.getBoxCollider().bounds.contains(player);
+        return background.getBoxCollider().bounds.contains(player);
 
     }
 

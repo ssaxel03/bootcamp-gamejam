@@ -15,11 +15,13 @@ import src.io.codeforall.fanstatics.entities.Enemy;
 import src.io.codeforall.fanstatics.entities.Player;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import static org.academiadecodigo.simplegraphics.keyboard.KeyboardEvent.*;
 
-public class GameManager implements MouseHandler {
+public class GameManager {
 
     public final static int SCREEN_WIDTH = 1920;
     public final static int SCREEN_HEIGHT = 1080;
@@ -40,7 +42,7 @@ public class GameManager implements MouseHandler {
     public GameManager() {
         this.backgroundTargetPos = new int[]{0, 0};
 
-        this.mouseInit();
+        // this.mouseInit();
 
         this.screen = new Rectangle(0, 0, SCREEN_WIDTH * 2, SCREEN_HEIGHT * 2);
         this.screen.setColor(Color.BLACK);
@@ -75,11 +77,17 @@ public class GameManager implements MouseHandler {
 
             collisionManager.checkCollisions();
 
-            Thread.sleep(15);
+            Thread.currentThread().sleep(40);
 
         }
+
     }
 
+    public CollisionManager getCollisionManager() {
+        return this.collisionManager;
+    }
+
+    /*
     public void mouseInit() {
         this.mouse = new Mouse(this);
 
@@ -89,6 +97,7 @@ public class GameManager implements MouseHandler {
     @Override
     public void mouseClicked(MouseEvent mouseEvent) {
 
+        /*
         System.out.println("MOUSE CLICKED");
 
         System.out.println("MOUSE CLICK X: " + mouseEvent.getX() +
@@ -100,10 +109,13 @@ public class GameManager implements MouseHandler {
 
         int[] direction = new int[]{(int) mouseEvent.getX() - this.player.getPosition()[0], (int) mouseEvent.getY() - this.player.getPosition()[1]};
         this.backgroundTargetPos = new int[]{this.background.getSprite().getX() - (direction[0]), this.background.getSprite().getY() - (direction[1])};
+
     }
+
 
     @Override
     public void mouseMoved(MouseEvent mouseEvent) {
 
     }
+   */
 }
