@@ -35,7 +35,6 @@ public class GameManager implements KeyboardHandler, MouseHandler {
     Player player;
     ArrayList<Enemy> enemies;
     Background background;
-    ArrayList<Collideable> collideables;
 
     public GameManager() {
         this.backgroundTargetPos = new int[] {0, 0};
@@ -43,17 +42,21 @@ public class GameManager implements KeyboardHandler, MouseHandler {
         this.mouseInit();
         this.keyboardInit();
 
-        this.screen = new Rectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+        this.screen = new Rectangle(0, 0, SCREEN_WIDTH * 2, SCREEN_HEIGHT * 2);
         this.screen.setColor(Color.BLACK);
         this.screen.fill();
 
         this.enemies = new ArrayList<>();
+
+        this.background = new Background(SCREEN_WIDTH, SCREEN_HEIGHT, enemies);
     }
 
     public void start() {
-        this.background = new Background(SCREEN_WIDTH, SCREEN_HEIGHT, enemies);
         this.player = new Player();
+        this.background.setPlayer(this.player);
         enemies.add(new Enemy(10, 10));
+
+        this.backgroundTargetPos = new int[] {0, 0};
 
         this.collisionManager = new CollisionManager(enemies, background, player);
 
@@ -69,14 +72,14 @@ public class GameManager implements KeyboardHandler, MouseHandler {
     public void gameLoop() throws InterruptedException {
         while(true) {
 
-            Thread.sleep(50);
+            Thread.sleep(15);
 
 
             for (Enemy enemy : enemies) {
                 enemy.move(player);
             }
 
-            background.move(backgroundTargetPos);
+            background.moveTo(backgroundTargetPos);
 
             collisionManager.checkCollisions();
 
@@ -91,23 +94,7 @@ public class GameManager implements KeyboardHandler, MouseHandler {
         moveUp.setKey(KEY_W);
         moveUp.setKeyboardEventType(KeyboardEventType.KEY_PRESSED);
 
-        KeyboardEvent moveDown = new KeyboardEvent();
-        moveDown.setKey(KeyboardEvent.KEY_S);
-        moveDown.setKeyboardEventType(KeyboardEventType.KEY_PRESSED);
-
-        KeyboardEvent moveLeft = new KeyboardEvent();
-        moveLeft.setKey(KEY_A);
-        moveLeft.setKeyboardEventType(KeyboardEventType.KEY_PRESSED);
-
-        KeyboardEvent moveRight = new KeyboardEvent();
-        moveRight.setKey(KEY_D);
-        moveRight.setKeyboardEventType(KeyboardEventType.KEY_PRESSED);
-
         keyboard.addEventListener(moveUp);
-        keyboard.addEventListener(moveDown);
-        keyboard.addEventListener(moveLeft);
-        keyboard.addEventListener(moveRight);
-
     }
 
     public void mouseInit() {
@@ -149,25 +136,6 @@ public class GameManager implements KeyboardHandler, MouseHandler {
                 this.background.getBoxCollider().bounds.getY());
     }
 
-    public void playermoveTo(int[] clickPosition) {
-
-        // CALCULATE DIRECTION VECTOR TO CLICK POSITION
-        int[] direction = new int[] {clickPosition[0] - this.player.getPosition()[0], clickPosition[1] - this.player.getPosition()[1]};
-
-
-
-        // CALCULATE DISTANCE OF DIRECTION TO PLAYER
-        double arrayLength = Math.sqrt( (direction[0] * direction[0]) + (direction[1] * direction[1]) );
-        // CREATE NEW DIRECTION VECTOR ALWAYS WITH THE SAME SIZE
-        int[] normalizedDirection = new int[] {-1 * (int) (player.getSpeed() * direction[0] / arrayLength), -1 * (int) (this.player.getSpeed() * direction[1] / arrayLength)};
-        // MOVE ALL OF ENEMY'S COMPONENTS
-
-        this.backgroundTargetPos = this.background.get;
-
-        this.background.move(normalizedDirection);
-        this.background.getBoxCollider().move(normalizedDirection);
-    }
-
     @Override
     public void keyReleased(KeyboardEvent keyboardEvent) {
 
@@ -176,11 +144,18 @@ public class GameManager implements KeyboardHandler, MouseHandler {
     @Override
     public void mouseClicked(MouseEvent mouseEvent) {
 
+
+
         int[] clickPosition = new int []{(int) mouseEvent.getX(), (int) mouseEvent.getY()};
         System.out.println("MOUSE CLICK X: " + clickPosition[0] +
                 "MOUSE CLICK Y: " + clickPosition[1]);
-        this.playermoveTo(clickPosition);
 
+        if(!collisionManager.isInside(clickPosition)) {
+            return;
+        }
+
+        int[] direction = new int[] {clickPosition[0] - this.player.getPosition()[0], clickPosition[1] - this.player.getPosition()[1]};
+        this.backgroundTargetPos = new int[] {this.background.getSprite().getX() - (direction[0]), this.background.getSprite().getY() - (direction[1])};
     }
 
     @Override

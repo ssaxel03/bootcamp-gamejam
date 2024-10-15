@@ -2,8 +2,10 @@ package src.io.codeforall.fanstatics;
 
 import src.io.codeforall.fanstatics.background.Background;
 import src.io.codeforall.fanstatics.entities.Enemy;
+import src.io.codeforall.fanstatics.entities.Entity;
 import src.io.codeforall.fanstatics.entities.Player;
 
+import java.awt.*;
 import java.util.ArrayList;
 
 public class CollisionManager {
@@ -28,6 +30,14 @@ public class CollisionManager {
                 enemy.onCollision(this.player);
             }
         }
+    }
+
+    public boolean isInside(int[] clickPosition) {
+
+        Rectangle player = new Rectangle(clickPosition[0], clickPosition[1], Entity.SPRITE_SIZE, Entity.SPRITE_SIZE);
+
+        return this.background.getBoxCollider().bounds.contains(player);
+
     }
 
 }
