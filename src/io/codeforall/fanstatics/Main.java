@@ -6,6 +6,6 @@ public class Main {
 
         GameManager game = new GameManager();
 
-        game.start();
+        game.play();
     }
 }

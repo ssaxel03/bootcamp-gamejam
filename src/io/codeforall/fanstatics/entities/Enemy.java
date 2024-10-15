@@ -25,16 +25,21 @@ public class Enemy extends Entity implements Collideable{
     }
 
     public void move(Player player) {
-
         // CALCULATE DIRECTION VECTOR TO PLAYER
         int[] direction = new int[] {player.getPosition()[0] - this.position[0], player.getPosition()[1] - this.position[1]};
         // CALCULATE DISTANCE OF DIRECTION TO PLAYER
         double arrayLength = Math.sqrt( (direction[0] * direction[0]) + (direction[1] * direction[1]) );
-        // CREATE NEW DIRECTION VECTOR ALWAYS WITH THE SAME SIZE
-        int[] normalizedDirection = new int[] {(int) (super.speed * direction[0] / arrayLength), (int) (this.speed * direction[1] / arrayLength)};
-        // MOVE ALL OF ENEMY'S COMPONENTS
-        this.move(normalizedDirection);
 
+        // CREATE NEW DIRECTION VECTOR ALWAYS WITH THE SAME SIZE OR SMALLER IF VERY CLOSE
+        // MAKE ENEMY AND ITS COMPONENTS MOVE
+        if(arrayLength < super.speed) {
+           this.move(direction);
+        }else {
+            direction[0] = (int) (super.speed * direction[0] / arrayLength);
+            direction[1] = (int) (super.speed * direction[1] / arrayLength);
+
+            this.move(direction);
+        }
     }
 
     @Override

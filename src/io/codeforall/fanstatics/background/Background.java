@@ -18,9 +18,6 @@ public class Background implements Collideable {
     private ArrayList<Enemy> enemies;
     private Player player;
 
-    private int[] initialPosition;
-    private int[] offset;
-
     public Background(int screenWidth, int screenHeight, ArrayList<Enemy> enemies) {
         this.boxCollider = new BoxCollider(10, 10, screenWidth - 20, screenHeight - 20);
 
@@ -29,25 +26,13 @@ public class Background implements Collideable {
         this.sprite.fill();
 
         this.enemies = enemies;
-        this.player = player;
 
-        this.initialPosition = new int[] {0, 0};
-
-        this.offset = new int[]{0, 0};
-    }
-
-    public int[] getOffset() {
-        return this.offset;
-    }
-
-    public void setOffset(int[] newOffset) {
-        this.offset = newOffset;
     }
 
     public void moveTo(int[] goalPosition) {
 
-        System.out.println("GOAL BG POSITION: [" + goalPosition[0] + ", " + goalPosition[1] + "]");
-        System.out.println("CURRENT BG POSITION POSITION: [" + this.sprite.getX() + ", " + this.sprite.getY() + "]");
+        // System.out.println("GOAL BG POSITION: [" + goalPosition[0] + ", " + goalPosition[1] + "]");
+        // System.out.println("CURRENT BG POSITION POSITION: [" + this.sprite.getX() + ", " + this.sprite.getY() + "]");
 
         int[] direction = new int[] { (goalPosition[0] - this.sprite.getX()), (goalPosition[1] - this.sprite.getY())};
 
@@ -60,26 +45,19 @@ public class Background implements Collideable {
         // CALCULATE DISTANCE OF DIRECTION TO PLAYER
         double arrayLength = Math.sqrt( (direction[0] * direction[0]) + (direction[1] * direction[1]) );
 
-        int[] normalizedDirection;
-
+        // CREATE NEW DIRECTION VECTOR ALWAYS WITH THE SAME SIZE OR SMALLER IF VERY CLOSE
+        // MOVE BACKGROUND AND ALL OF ITS COMPONENTS
         if(arrayLength < this.player.getSpeed()) {
-           normalizedDirection = new int[] {direction[0], direction[1]};
+            this.move(direction);
         } else {
-            // CREATE NEW DIRECTION VECTOR ALWAYS WITH THE SAME SIZE
-            normalizedDirection = new int[] {(int) (this.player.getSpeed() * direction[0] / arrayLength),(int) (this.player.getSpeed() * direction[1] / arrayLength)};
+            direction[0] = (int) (this.player.getSpeed() * direction[0] / arrayLength);
+            direction[1] = (int) (this.player.getSpeed() * direction[1] / arrayLength);
+            this.move(direction);
         }
-
-
-        // MOVE ALL OF ENEMY'S COMPONENTS
-
-        this.offset = new int[] {this.offset[0] + normalizedDirection[0], this.offset[0] + normalizedDirection[0]};
-
-        this.move(normalizedDirection);
-
     }
 
     public void move(int[] translate) {
-        System.out.println("MOVED TRANSLATE: " + translate[0] + " " + translate[1]);
+        // System.out.println("MOVED TRANSLATE: " + translate[0] + " " + translate[1]);
 
         this.sprite.translate(translate[0], translate[1]);
         this.sprite.fill();
