@@ -4,6 +4,7 @@ import org.academiadecodigo.simplegraphics.graphics.Color;
 import org.academiadecodigo.simplegraphics.graphics.Rectangle;
 import src.io.codeforall.fanstatics.BoxCollider;
 import src.io.codeforall.fanstatics.Collideable;
+import src.io.codeforall.fanstatics.Vectors;
 import src.io.codeforall.fanstatics.entities.Enemy;
 import src.io.codeforall.fanstatics.entities.Player;
 
@@ -31,28 +32,27 @@ public class Background implements Collideable {
 
     public void moveTo(int[] goalPosition) {
 
+        // DEBUG
         // System.out.println("GOAL BG POSITION: [" + goalPosition[0] + ", " + goalPosition[1] + "]");
         // System.out.println("CURRENT BG POSITION POSITION: [" + this.sprite.getX() + ", " + this.sprite.getY() + "]");
 
-        int[] direction = new int[] { (goalPosition[0] - this.sprite.getX()), (goalPosition[1] - this.sprite.getY())};
+        // ATTRIBUTE DIRECTION OF BACKGROUND MOVEMENT
+        int directionX = (goalPosition[0] - this.sprite.getX());
+        int directionY = (goalPosition[1] - this.sprite.getY());
 
-        int[] spriteGoalPosition = new int[] {this.sprite.getX() + direction[0], this.sprite.getY() + direction[1]};
-
-        if(spriteGoalPosition[0] == this.sprite.getX() && spriteGoalPosition[1] == this.sprite.getY()) {
-            return;
-        }
-
-        // CALCULATE DISTANCE OF DIRECTION TO PLAYER
-        double arrayLength = Math.sqrt( (direction[0] * direction[0]) + (direction[1] * direction[1]) );
-
-        // CREATE NEW DIRECTION VECTOR ALWAYS WITH THE SAME SIZE OR SMALLER IF VERY CLOSE
-        // MOVE BACKGROUND AND ALL OF ITS COMPONENTS
-        if(arrayLength < this.player.getSpeed()) {
-            this.move(direction);
+        // CHECKS IF WE ARE CLOSE ENOUGH TO THE GOAL POSITION SO THAT OUR NORMALIZED VECTOR TIMES SPEED ARE GOING TO SURPASS THE GOAL POSITION
+        if(Vectors.getVectorLength(directionX, directionY) < this.player.getSpeed()) {
+            // MOVES JUST THE AMOUNT NEEDED TO REACH THE GOAL POSITION
+            this.move(new int[] {directionX, directionY});
         } else {
-            direction[0] = (int) (this.player.getSpeed() * direction[0] / arrayLength);
-            direction[1] = (int) (this.player.getSpeed() * direction[1] / arrayLength);
-            this.move(direction);
+            // MOVES THE MAXIMUM AMOUNT ALLOWED BY THE SPEED ATTRIBUTE OF THE PLAYER
+            float[] normalizedArray = Vectors.getNormalizedDirection(directionX, directionY);
+
+            // CREATES THE MOVE ARRAY ACCORDING TO THE PLAYER SPEED
+            int[] moveArray = new int[] {(int) (normalizedArray[0] * this.player.getSpeed()), (int) (normalizedArray[1] * this.player.getSpeed())};
+
+            // MOVES THE BACKGROUND
+            this.move(moveArray);
         }
     }
 

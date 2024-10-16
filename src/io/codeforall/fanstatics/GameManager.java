@@ -23,19 +23,14 @@ public class GameManager implements MouseHandler {
 
     public final static int SCREEN_WIDTH = 1920;
     public final static int SCREEN_HEIGHT = 1080;
-
     private Keyboard keyboard;
     private Mouse mouse;
-
     private Rectangle screen;
-
     private CollisionManager collisionManager;
-
-    int[] backgroundTargetPos;
-
-    Player player;
-    ArrayList<Enemy> enemies;
-    Background background;
+    private int[] backgroundTargetPos;
+    private Player player;
+    private ArrayList<Enemy> enemies;
+    private Background background;
 
     public GameManager() {
         this.backgroundTargetPos = new int[]{0, 0};
