@@ -1,26 +1,35 @@
 package src.io.codeforall.fanstatics;
 
 public enum GunType {
-    PISTOL(5,800,10),
-    RIFLE(10,100,15),
-    SHOTGUN(15,400,6);
+    PISTOL("Pistol",17,400, 500, 12),
+    RIFLE("Rifle",30,150, 300, 30),
+    SHOTGUN("Shotgun",110,800, 600, 6);
 
-    private int damage;
-    private long delayMs;
-    private int bullets;
+    private final String name;
+    private final int damage;
+    private final long fireRateDelayMs;
+    private final int reloadTimeMs;
+    private final int bullets;
 
-    GunType(int damage, long delayMs, int bullets){
+    GunType(String name, int damage, long fireRateDelayMs, int reloadTimeMs, int bullets){
+        this.name = name;
         this.damage = damage;
-        this.delayMs = delayMs;
+        this.fireRateDelayMs = fireRateDelayMs;
+        this.reloadTimeMs = reloadTimeMs;
         this.bullets = bullets;
     }
 
+    public String getName() {
+        return name;
+    }
     public int getDamage(){
         return this.damage;
     }
-
-    public long getDelayMs(){
-        return this.delayMs;
+    public long getFireRateDelayMs(){
+        return this.fireRateDelayMs;
+    }
+    public int getReloadTimeMs() {
+        return reloadTimeMs;
     }
     public int getBullets(){
         return this.bullets;
