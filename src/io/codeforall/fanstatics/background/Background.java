@@ -34,13 +34,29 @@ public class Background implements Collideable {
         // System.out.println("GOAL BG POSITION: [" + goalPosition[0] + ", " + goalPosition[1] + "]");
         // System.out.println("CURRENT BG POSITION POSITION: [" + this.sprite.getX() + ", " + this.sprite.getY() + "]");
 
-        int[] direction = new int[] { (goalPosition[0] - this.sprite.getX()), (goalPosition[1] - this.sprite.getY())};
+        int directionX = this.player.getADir() - this.player.getDDir();
+        int directionY = this.player.getWDir() - this.player.getSDir();
 
-        int[] spriteGoalPosition = new int[] {this.sprite.getX() + direction[0], this.sprite.getY() + direction[1]};
+        System.out.println(directionX);
+        System.out.println(directionY);
 
-        if(spriteGoalPosition[0] == this.sprite.getX() && spriteGoalPosition[1] == this.sprite.getY()) {
+        float vectorLength = (float) Math.sqrt( (directionX * directionX) +
+                (directionY * directionY) );
+
+        if(vectorLength == 0) {
             return;
         }
+        try {
+            directionX = (int) ((directionX * this.player.getSpeed()) / vectorLength);
+            directionY = (int) ((directionY * this.player.getSpeed()) / vectorLength);
+        } catch(Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        this.move(new int[] {directionX, directionY});
+
+        /*
+        int[] direction = new int[] { (goalPosition[0] - this.sprite.getX()), (goalPosition[1] - this.sprite.getY())};
 
         // CALCULATE DISTANCE OF DIRECTION TO PLAYER
         double arrayLength = Math.sqrt( (direction[0] * direction[0]) + (direction[1] * direction[1]) );
@@ -54,6 +70,7 @@ public class Background implements Collideable {
             direction[1] = (int) (this.player.getSpeed() * direction[1] / arrayLength);
             this.move(direction);
         }
+         */
     }
 
     public void move(int[] translate) {

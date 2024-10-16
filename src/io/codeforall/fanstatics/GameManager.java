@@ -72,13 +72,13 @@ public class GameManager implements MouseHandler, KeyboardHandler {
     public void gameLoop() throws InterruptedException {
         while (true) {
 
-            // background.moveTo(backgroundTargetPos);
+            background.moveTo(backgroundTargetPos);
 
             System.out.println(this.player.getWDir());
 
-            // collisionManager.checkCollisions();
+            collisionManager.checkCollisions();
 
-            Thread.sleep(800);
+            Thread.sleep(10);
 
         }
     }
@@ -161,21 +161,22 @@ public class GameManager implements MouseHandler, KeyboardHandler {
 
     @Override
     public void keyPressed(KeyboardEvent keyboardEvent) {
-        this.player.setDir(
-                keyboardEvent.getKey() == KEY_W,
-                keyboardEvent.getKey() == KEY_S,
-                keyboardEvent.getKey() == KEY_A,
-                keyboardEvent.getKey() == KEY_D
-        );
+        int wDir = 0;
+        int sDir = 0;
+        int aDir = 0;
+        int dDir = 0;
+
+        if(keyboardEvent.getKey() == KEY_W) {wDir = 1;}
+        if(keyboardEvent.getKey() == KEY_S) {sDir = 1;}
+        if(keyboardEvent.getKey() == KEY_A) {aDir = 1;}
+        if(keyboardEvent.getKey() == KEY_D) {dDir = 1;}
+
+        this.player.setDir(wDir, sDir, aDir, dDir);
+
     }
 
     @Override
     public void keyReleased(KeyboardEvent keyboardEvent) {
-        this.player.setDir(
-                !(keyboardEvent.getKey() == KEY_W),
-                !(keyboardEvent.getKey() == KEY_S),
-                !(keyboardEvent.getKey() == KEY_A),
-                !(keyboardEvent.getKey() == KEY_D)
-        );
+        this.player.setDir(0, 0, 0, 0);
     }
 }
