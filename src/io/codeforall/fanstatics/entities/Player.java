@@ -12,6 +12,11 @@ public class Player extends Entity implements Collideable {
     private Rectangle sprite;
     private PlayerController playerController;
 
+    boolean wDir;
+    boolean sDir;
+    boolean aDir;
+    boolean dDir;
+
     private int[] position;
 
     public Player() {
@@ -19,6 +24,11 @@ public class Player extends Entity implements Collideable {
                 GameManager.SCREEN_HEIGHT / 2 - Entity.SPRITE_SIZE / 2,
                 15,
                 "Player");
+
+        wDir = false;
+        sDir = false;
+        aDir = false;
+        dDir = false;
 
         this.playerController = new PlayerController(
                 this.sprite = new Rectangle(GameManager.SCREEN_WIDTH / 2 - super.SPRITE_SIZE / 2,
@@ -33,12 +43,30 @@ public class Player extends Entity implements Collideable {
         return this.position;
     }
 
-    public void setPosition(int[] position) {
-        this.position = position;
-    }
-
     public int getSpeed() {
         return this.speed;
+    }
+
+    public boolean getWDir() {
+        return this.wDir;
+    }
+    public boolean getSDir() {
+        return this.sDir;
+    }
+    public boolean getADir() {
+        return this.aDir;
+    }
+    public boolean getDDir() {
+        return this.dDir;
+    }
+    public void setDir(
+            boolean wDir, boolean sDir,
+            boolean aDir, boolean dDir) {
+
+        this.wDir = wDir;
+        this.sDir = sDir;
+        this.aDir = aDir;
+        this.dDir = dDir;
     }
 
     @Override
