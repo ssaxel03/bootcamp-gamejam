@@ -16,7 +16,7 @@ public class Bullet implements Collideable{
     private BoxCollider boxCollider;
     private float[] normalizedDirection;
 
-    private final long despawnTimeMs = 500;
+    private final long despawnTimeMs = 1000;
     private final long spawnTimeMs;
 
     // Constructor

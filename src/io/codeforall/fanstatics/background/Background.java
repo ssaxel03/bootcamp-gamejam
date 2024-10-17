@@ -37,8 +37,8 @@ public class Background implements Collideable {
 
         int directionX = this.player.getADir() - this.player.getDDir();
         int directionY = this.player.getWDir() - this.player.getSDir();
-        System.out.println(directionX);
-        System.out.println(directionY);
+        // System.out.println(directionX);
+        // System.out.println(directionY);
 
         float vectorLength = (float) Math.sqrt( (directionX * directionX) +
                 (directionY * directionY) );
