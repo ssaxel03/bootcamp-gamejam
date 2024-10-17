@@ -35,24 +35,24 @@ public class Background implements Collideable {
         // System.out.println("GOAL BG POSITION: [" + goalPosition[0] + ", " + goalPosition[1] + "]");
         // System.out.println("CURRENT BG POSITION POSITION: [" + this.sprite.getX() + ", " + this.sprite.getY() + "]");
 
-        // ATTRIBUTE DIRECTION OF BACKGROUND MOVEMENT
-        int directionX = (goalPosition[0] - this.sprite.getX());
-        int directionY = (goalPosition[1] - this.sprite.getY());
+        int directionX = this.player.getADir() - this.player.getDDir();
+        int directionY = this.player.getWDir() - this.player.getSDir();
+        System.out.println(directionX);
+        System.out.println(directionY);
 
-        // CHECKS IF WE ARE CLOSE ENOUGH TO THE GOAL POSITION SO THAT OUR NORMALIZED VECTOR TIMES SPEED ARE GOING TO SURPASS THE GOAL POSITION
-        if(Vectors.getVectorLength(directionX, directionY) < this.player.getSpeed()) {
-            // MOVES JUST THE AMOUNT NEEDED TO REACH THE GOAL POSITION
-            this.move(new int[] {directionX, directionY});
-        } else {
-            // MOVES THE MAXIMUM AMOUNT ALLOWED BY THE SPEED ATTRIBUTE OF THE PLAYER
-            float[] normalizedArray = Vectors.getNormalizedDirection(directionX, directionY);
+        float vectorLength = (float) Math.sqrt( (directionX * directionX) +
+                (directionY * directionY) );
 
-            // CREATES THE MOVE ARRAY ACCORDING TO THE PLAYER SPEED
-            int[] moveArray = new int[] {(int) (normalizedArray[0] * this.player.getSpeed()), (int) (normalizedArray[1] * this.player.getSpeed())};
-
-            // MOVES THE BACKGROUND
-            this.move(moveArray);
+        if(vectorLength == 0) {
+            return;
         }
+        try {
+            directionX = (int) ((directionX * this.player.getSpeed()) / vectorLength);
+            directionY = (int) ((directionY * this.player.getSpeed()) / vectorLength);
+        } catch(Exception e) {
+            System.out.println(e.getMessage());
+        }
+        this.move(new int[] {directionX, directionY});
     }
 
     public void move(int[] translate) {
