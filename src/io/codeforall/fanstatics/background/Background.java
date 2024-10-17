@@ -32,7 +32,6 @@ public class Background implements Collideable {
 
     public void moveTo(int[] goalPosition) {
 
-        // DEBUG
         // System.out.println("GOAL BG POSITION: [" + goalPosition[0] + ", " + goalPosition[1] + "]");
         // System.out.println("CURRENT BG POSITION POSITION: [" + this.sprite.getX() + ", " + this.sprite.getY() + "]");
 
