@@ -2,6 +2,7 @@ package src.io.codeforall.fanstatics.entities;
 
 import org.academiadecodigo.simplegraphics.graphics.Rectangle;
 import src.io.codeforall.fanstatics.Collideable;
+import src.io.codeforall.fanstatics.Vectors;
 
 public class Enemy extends Entity implements Collideable{
 
@@ -25,20 +26,33 @@ public class Enemy extends Entity implements Collideable{
     }
 
     public void move(Player player) {
-        // CALCULATE DIRECTION VECTOR TO PLAYER
-        int[] direction = new int[] {player.getPosition()[0] - this.position[0], player.getPosition()[1] - this.position[1]};
-        // CALCULATE DISTANCE OF DIRECTION TO PLAYER
-        double arrayLength = Math.sqrt( (direction[0] * direction[0]) + (direction[1] * direction[1]) );
+        // ATTRIBUTE DIRECTION OF ENEMY MOVEMENT
+        int directionX = player.getPosition()[0] - this.position[0];
+        int directionY = player.getPosition()[1] - this.position[1];
 
-        // CREATE NEW DIRECTION VECTOR ALWAYS WITH THE SAME SIZE OR SMALLER IF VERY CLOSE
-        // MAKE ENEMY AND ITS COMPONENTS MOVE
-        if(arrayLength < super.speed) {
-           this.move(direction);
-        }else {
-            direction[0] = (int) (super.speed * direction[0] / arrayLength);
-            direction[1] = (int) (super.speed * direction[1] / arrayLength);
+        // DEBUG
+        // System.out.println("DIRECTION X " + directionX);
+        // System.out.println("DIRECTION y " + directionY);
 
-            this.move(direction);
+        // CHECKS IF WE ARE CLOSE ENOUGH TO THE PLAYER SO THAT OUR NORMALIZED VECTOR TIMES SPEED ARE GOING TO SURPASS THE GOAL POSITION
+        if(Vectors.getVectorLength(directionX, directionY) < super.speed) {
+            // MOVES JUST THE AMOUNT NEEDED TO REACH THE PLAYER
+            this.move(new int[] {directionX, directionY});
+        } else {
+            // MOVES THE MAXIMUM AMOUNT ALLOWED BY THE SPEED ATTRIBUTE OF THE ENEMY
+            float[] normalizedArray = Vectors.getNormalizedDirection(directionX, directionY);
+
+            // DEBUG
+            // System.out.println("NORMALIZED ARRAY X " + normalizedArray[0] + " Y " + normalizedArray[1]);
+
+            // CREATES THE MOVE ARRAY ACCORDING TO THE ENEMY SPEED
+            int[] moveArray = new int[] {(int) (normalizedArray[0] * super.speed), (int) (normalizedArray[1] * super.speed)};
+
+            // DEBUG
+            // System.out.println("MOVE ARRAY X " + moveArray[0] + " Y " + moveArray[1]);
+
+            // MOVES THE ENEMY
+            this.move(moveArray);
         }
     }
 

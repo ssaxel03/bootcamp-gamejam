@@ -33,6 +33,7 @@ public class CollisionManager {
         }
     }
 
+    // DEPRECATED
     public boolean isInside(int[] clickPosition) {
 
         Rectangle player = new Rectangle(clickPosition[0], clickPosition[1], Entity.SPRITE_SIZE, Entity.SPRITE_SIZE);
