@@ -19,43 +19,39 @@ import java.util.ArrayList;
 
 import static org.academiadecodigo.simplegraphics.keyboard.KeyboardEvent.*;
 
-public class GameManager implements MouseHandler, KeyboardHandler {
+public class GameManager implements KeyboardHandler {
 
     public final static int SCREEN_WIDTH = 1920;
     public final static int SCREEN_HEIGHT = 1080;
     private Keyboard keyboard;
-    private Mouse mouse;
     private Rectangle screen;
     private CollisionManager collisionManager;
-    private int[] backgroundTargetPos;
     private Player player;
     private ArrayList<Enemy> enemies;
+    private ArrayList<Bullet> bulletsShot;
     private Background background;
 
     public GameManager() {
-        this.backgroundTargetPos = new int[]{0, 0};
-
-        this.mouseInit();
+        // INITIALIZE IO RECEIVERS
         this.keyboardInit();
-
+        // CREATE EMPTY SCREEN BEHIND BACKGROUND
         this.screen = new Rectangle(0, 0, SCREEN_WIDTH * 2, SCREEN_HEIGHT * 2);
         this.screen.setColor(Color.BLACK);
         this.screen.fill();
-
+        // CREATE EMPTY LIST OF ENEMIES
         this.enemies = new ArrayList<>();
-
+        this.bulletsShot = new ArrayList<>();
+        // CREATE BACKGROUND
         this.background = new Background(SCREEN_WIDTH, SCREEN_HEIGHT, enemies);
     }
 
     public void play() {
 
-        this.player = new Player();
+        this.player = new Player(bulletsShot);
         this.background.setPlayer(this.player);
         enemies.add(new Enemy(10, 10));
 
-        this.backgroundTargetPos = new int[]{0, 0};
-
-        this.collisionManager = new CollisionManager(enemies, background, player);
+        this.collisionManager = new CollisionManager(background, player, enemies, bulletsShot);
 
         try {
             this.gameLoop();
@@ -67,21 +63,18 @@ public class GameManager implements MouseHandler, KeyboardHandler {
     public void gameLoop() throws InterruptedException {
         while (true) {
 
-            background.moveTo(backgroundTargetPos);
+            this.background.moveTo();
 
-            System.out.println(this.player.getWDir());
+            this.player.shoot(enemies);
 
             collisionManager.checkCollisions();
+
+            System.out.println("Enemy is " + enemies.get(0).getHealth() + " HP");
+            System.out.println("BULLETS LIST HAS " + bulletsShot.size() + " BULLETS");
 
             Thread.sleep(10);
 
         }
-    }
-
-    public void mouseInit() {
-        this.mouse = new Mouse(this);
-
-        mouse.addEventListener(MouseEventType.MOUSE_CLICKED);
     }
 
     public void keyboardInit() {
@@ -130,48 +123,19 @@ public class GameManager implements MouseHandler, KeyboardHandler {
     }
 
     @Override
-    public void mouseClicked(MouseEvent mouseEvent) {
-        // DEBUG
-        System.out.println("MOUSE CLICKED");
-        System.out.println("MOUSE CLICK X: " + mouseEvent.getX() +
-                "MOUSE CLICK Y: " + mouseEvent.getY());
-        // CHECK IF PLAYER CLICKED INSIDE THE MAP
-        if (!collisionManager.isInside((int) mouseEvent.getX(), (int) mouseEvent.getY())) {
-            return;
-        }
-        // ATTRIBUTE VECTOR COORDINATES FROM PLAYER TO MOUSE CLICK
-        int directionX = (int) mouseEvent.getX() - this.player.getPosition()[0];
-        int directionY = (int) mouseEvent.getY() - this.player.getPosition()[1];
-        // CHANGE BACKGROUND TARGET POSITION ACCORDING TO THE INVERTED VECTOR
-        this.backgroundTargetPos = new int[]{
-                this.background.getSprite().getX() - directionX,
-                this.background.getSprite().getY() - directionY
-        };
-    }
-
-    @Override
-    public void mouseMoved(MouseEvent mouseEvent) {
-
-    }
-
-    @Override
     public void keyPressed(KeyboardEvent keyboardEvent) {
-        int wDir = 0;
-        int sDir = 0;
-        int aDir = 0;
-        int dDir = 0;
-
-        if(keyboardEvent.getKey() == KEY_W) {wDir = 1;}
-        if(keyboardEvent.getKey() == KEY_S) {sDir = 1;}
-        if(keyboardEvent.getKey() == KEY_A) {aDir = 1;}
-        if(keyboardEvent.getKey() == KEY_D) {dDir = 1;}
-
-        this.player.setDir(wDir, sDir, aDir, dDir);
+        if(keyboardEvent.getKey() == KEY_W) {this.player.setWDir(1);}
+        if(keyboardEvent.getKey() == KEY_S) {this.player.setSDir(1);}
+        if(keyboardEvent.getKey() == KEY_A) {this.player.setADir(1);}
+        if(keyboardEvent.getKey() == KEY_D) {this.player.setDDir(1);}
 
     }
 
     @Override
     public void keyReleased(KeyboardEvent keyboardEvent) {
-        this.player.setDir(0, 0, 0, 0);
+        if(keyboardEvent.getKey() == KEY_W) {this.player.setWDir(0);}
+        if(keyboardEvent.getKey() == KEY_S) {this.player.setSDir(0);}
+        if(keyboardEvent.getKey() == KEY_A) {this.player.setADir(0);}
+        if(keyboardEvent.getKey() == KEY_D) {this.player.setDDir(0);}
     }
 }

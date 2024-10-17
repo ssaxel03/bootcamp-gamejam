@@ -1,6 +1,7 @@
 package src.io.codeforall.fanstatics.entities;
 
 import org.academiadecodigo.simplegraphics.graphics.Rectangle;
+import src.io.codeforall.fanstatics.Bullet;
 import src.io.codeforall.fanstatics.Collideable;
 import src.io.codeforall.fanstatics.Vectors;
 
@@ -10,7 +11,7 @@ public class Enemy extends Entity implements Collideable{
     private int[] position;
 
     public Enemy(int x, int y) {
-        super(x, y, 3, "Enemy");
+        super(x, y, 7, "Enemy");
         this.enemyController = new EnemyController(
                 new Rectangle(0, 0,
                         Entity.SPRITE_SIZE,
@@ -62,6 +63,22 @@ public class Enemy extends Entity implements Collideable{
 
         System.out.println("Enemy collided with " + col.getName());
 
+        switch(col.getName()) {
+            case "Bullet" -> this.hit(((Bullet) col).getDamage());
+        }
+
         return;
+    }
+
+    public int getPositionX() {
+        return this.position[0];
+    }
+
+    public int getPositionY() {
+        return this.position[1];
+    }
+
+    public int getHealth() {
+        return this.health;
     }
 }

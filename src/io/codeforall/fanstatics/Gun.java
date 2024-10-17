@@ -1,4 +1,4 @@
-package src.io.codeforall.fanstatics.entities;
+package src.io.codeforall.fanstatics;
 
 import org.academiadecodigo.simplegraphics.graphics.Rectangle;
 import src.io.codeforall.fanstatics.Bullet;
@@ -11,32 +11,33 @@ public class Gun {
     public final int GUN_HEIGHT = 5;
     private int ammo;
     private Rectangle sprite;
-    // private GunType gunType;
+    private GunType gunType;
     private ArrayList<Bullet> bulletsShot;
-    private int reloadTimerMs;
-    private int fireRateTimerMs;
+    private long reloadTimerMs;
+    private long lastShotTimerMs;
     private boolean reloading;
 
     // Constructor
-    public Gun(int x, int y, ArrayList<Bullet> bulletsShot) {
-        this.ammo = 0;
+    public Gun(int x, int y, GunType gunType, ArrayList<Bullet> bulletsShot) {
+        this.ammo = 100;
         this.sprite = new Rectangle(x, y, GUN_WIDTH, GUN_HEIGHT);
+        this.gunType = gunType;
         this.bulletsShot = bulletsShot;
-        this.reloadTimerMs = 0;
-        this.fireRateTimerMs = (int) System.currentTimeMillis();
+        this.lastShotTimerMs = System.currentTimeMillis() - gunType.getFireRateDelayMs();
         this.reloading = false;
     }
 
     // Method to shoot
     public void shoot(int x, int y, float[] normalizedDirection) {
+        System.out.println("WEAPON IS SHOOTING");
 
-        if(ammo > 0) {
-            bulletsShot.add(new Bullet(10/* GUNTYPE*/, x, y, normalizedDirection));
-            return;
+        System.out.println("Time since last shot " + (System.currentTimeMillis() - lastShotTimerMs));
+
+        // IF THE WEAPONS STILL HAS AMMO LEFT AND THERE HAS PASSED ENOUGH TIME SINCE THE LAST SHOT THE WEAPON SHOOTS
+        if(ammo > 0 && System.currentTimeMillis() - lastShotTimerMs >= gunType.getFireRateDelayMs()) {
+            bulletsShot.add(new Bullet(gunType.getDamage(), x, y, normalizedDirection));
+            this.lastShotTimerMs = System.currentTimeMillis();
         }
-
-        System.out.println("NO AMMO");
-
     }
 
     // Method to reload

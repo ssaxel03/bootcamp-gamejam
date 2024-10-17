@@ -10,26 +10,43 @@ import java.util.ArrayList;
 
 public class CollisionManager {
 
-    public ArrayList<Enemy> enemies;
+    private ArrayList<Enemy> enemies;
+    private ArrayList<Bullet> bulletsShot;
     private Background background;
     public Player player;
 
-    public CollisionManager(ArrayList<Enemy> enemies, Background background, Player player) {
-        this.enemies = enemies;
+    public CollisionManager(Background background, Player player, ArrayList<Enemy> enemies, ArrayList<Bullet> bulletsShot) {
         this.background = background;
         this.player = player;
+        this.enemies = enemies;
+        this.bulletsShot = bulletsShot;
     }
 
     public void checkCollisions() {
         for (Enemy enemy : enemies) {
-
-            enemy.move(this.player);
+            if(enemy.getHealth() > 0) {
+                enemy.move(this.player);
+            }
             // System.out.println("CHECKING COLLISIONS FOR " + this.player.getName() + " AND " + enemy.getName());
             // CHECK IF EACH ENEMY COLLIDED WITH THE PLAYER
-            if (this.player.getBoxCollider().getBounds().intersects(enemy.getBoxCollider().getBounds())) {
+            if (this.player.getBoxCollider().getBounds().intersects(enemy.getBounds())) {
                 this.player.onCollision(enemy);
                 enemy.onCollision(this.player);
+                this.player.onCollision(enemy);
             }
+
+            ArrayList<Bullet> toBeRemoved = new ArrayList<Bullet>();
+            for(Bullet bullet : bulletsShot) {
+                bullet.move();
+                if(bullet.getBoxCollider().getBounds().intersects(enemy.getBounds())) {
+                    enemy.onCollision(bullet);
+                    bullet.onCollision(enemy);
+                    toBeRemoved.add(bullet);
+                }
+                if(bullet.checkDespawn()) {toBeRemoved.add(bullet);}
+            }
+
+            bulletsShot.removeAll(toBeRemoved);
         }
     }
 
