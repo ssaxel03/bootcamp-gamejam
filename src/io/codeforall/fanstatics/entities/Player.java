@@ -10,12 +10,15 @@ public class Player extends Entity implements Collideable {
 
     private Rectangle sprite;
     private Gun gun;
+    private int money;
+    private int bullets;
     private Enemy targetEnemy;
 
     int wDir;
     int sDir;
     int aDir;
     int dDir;
+    boolean eKey;
 
     private int[] position;
 
@@ -33,7 +36,11 @@ public class Player extends Entity implements Collideable {
         this.sprite.setColor(Color.BLUE);
         this.sprite.fill();
         // CREATE THE DEFAULT GUN
-        this.gun = new Gun(0, 0, GunType.RIFLE, bulletsShot);
+        this.gun = new Gun(0, 0, GunType.PISTOL, bulletsShot);
+        this.gun.setAmmo(12);
+        // GIVE THE PLAYER NO MONEY AND NO BULLETS
+        this.money = 50;
+        this.bullets = 10;
         // CREATE THE TARGET ENEMY AS NULL
         this.targetEnemy = null;
         // INITIAL VECTOR MOVEMENT
@@ -41,6 +48,8 @@ public class Player extends Entity implements Collideable {
         sDir = 0;
         aDir = 0;
         dDir = 0;
+        // INITIAL E KEY VALUE
+        eKey = false;
         // SAVE INITIAL POSITION
         this.position = new int[]{this.sprite.getX(), this.sprite.getY()};
     }
@@ -66,7 +75,8 @@ public class Player extends Entity implements Collideable {
                 this.position[1],
                 Vectors.getNormalizedDirection(targetEnemy.getPositionX() - this.position[0],
                         targetEnemy.getPositionY() - this.position[1]));
-        System.out.println("SHOTS FIRED");
+        // DEBUG
+        // System.out.println("SHOTS FIRED");
         // IF THE ENEMY DIES, RESET THE TARGET ENEMY
         if(this.targetEnemy.getHealth() <= 0) {
             this.targetEnemy = null;
@@ -76,17 +86,36 @@ public class Player extends Entity implements Collideable {
     @Override
     public void onCollision(Collideable col) {
         // PLAYER COLLISION METHOD
+        // DEBUG
+        // System.out.println("Player collided with " + col.getName());
 
-        System.out.println("Player collided with " + col.getName());
-
-        switch (col.getName()) {
-            case "Enemy":
-                this.hit(2);
-                System.out.println("PLAYER GOT HIT (" + super.health + ")");
-
+        if (col.getName().equals("Enemy")) {
+            this.hit(2);
+            System.out.println("PLAYER GOT HIT (" + super.health + ")");
         }
+    }
 
-        return;
+    public void pay(int amount) {
+        this.money -= amount;
+    }
+    public int getMoney() {
+        return this.money;
+    }
+    public void incMoney(int amount) {
+        this.money = Math.min(money + amount, 1000);
+    }
+    public int getHealth() {
+        return this.health;
+    }
+    public int getBullets() {
+        return this.bullets;
+    }
+    public int getGunBullets() {
+        return this.gun.getAmmo();
+    }
+
+    public GunType getGunType() {
+        return this.gun.getGunType();
     }
 
     public int[] getPosition() {
@@ -127,5 +156,17 @@ public class Player extends Entity implements Collideable {
 
     public void setDDir(int dDir) {
         this.dDir = dDir;
+    }
+
+    public void PressEKey() {
+        this.eKey = true;
+    }
+
+    public void ReleaseEKey() {
+        this.eKey = false;
+    }
+
+    public boolean getEKey() {
+        return this.eKey;
     }
 }

@@ -1,5 +1,6 @@
 package src.io.codeforall.fanstatics;
 
+import org.academiadecodigo.simplegraphics.graphics.Canvas;
 import org.academiadecodigo.simplegraphics.graphics.Color;
 import org.academiadecodigo.simplegraphics.graphics.Rectangle;
 import org.academiadecodigo.simplegraphics.keyboard.Keyboard;
@@ -15,6 +16,7 @@ import src.io.codeforall.fanstatics.entities.Enemy;
 import src.io.codeforall.fanstatics.entities.Player;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 
 import static org.academiadecodigo.simplegraphics.keyboard.KeyboardEvent.*;
@@ -29,29 +31,38 @@ public class GameManager implements KeyboardHandler {
     private Player player;
     private ArrayList<Enemy> enemies;
     private ArrayList<Bullet> bulletsShot;
+    private ArrayList<Interactable> interactables;
     private Background background;
+    private HUD hud;
+    private InputTest inputTest;
 
     public GameManager() {
         // INITIALIZE IO RECEIVERS
         this.keyboardInit();
         // CREATE EMPTY SCREEN BEHIND BACKGROUND
-        this.screen = new Rectangle(0, 0, SCREEN_WIDTH * 2, SCREEN_HEIGHT * 2);
+        this.screen = new Rectangle(0, 0, 7000, 7000);
         this.screen.setColor(Color.BLACK);
         this.screen.fill();
         // CREATE EMPTY LIST OF ENEMIES
         this.enemies = new ArrayList<>();
         this.bulletsShot = new ArrayList<>();
+        this.interactables = new ArrayList<>();
         // CREATE BACKGROUND
-        this.background = new Background(SCREEN_WIDTH, SCREEN_HEIGHT, enemies);
+        this.background = new Background(enemies, interactables);
+        this.hud = new HUD();
+        this.inputTest = new InputTest(background);
+        this.inputTest.init();
+
     }
 
     public void play() {
 
         this.player = new Player(bulletsShot);
         this.background.setPlayer(this.player);
+        this.hud.setPlayer(this.player);
         enemies.add(new Enemy(10, 10));
 
-        this.collisionManager = new CollisionManager(background, player, enemies, bulletsShot);
+        this.collisionManager = new CollisionManager(background, player, enemies, bulletsShot, interactables);
 
         try {
             this.gameLoop();
@@ -62,16 +73,18 @@ public class GameManager implements KeyboardHandler {
 
     public void gameLoop() throws InterruptedException {
         while (true) {
-
+            // MOVE THE BACKGROUND TO SIMULATE PLAYER MOVEMENT WITH CAMERA FOLLOW
             this.background.moveTo();
-
+            // PLAYER SHOOTS
             this.player.shoot(enemies);
-
+            // CHECK FOR ALL COLLISION AND MOVE ALL OBJECTS EXCEPT THE PLAYER
             collisionManager.checkCollisions();
-
-            System.out.println("Enemy is " + enemies.get(0).getHealth() + " HP");
-            System.out.println("BULLETS LIST HAS " + bulletsShot.size() + " BULLETS");
-
+            // DEBUG
+            // System.out.println("Enemy is " + enemies.get(0).getHealth() + " HP");
+            // System.out.println("BULLETS LIST HAS " + bulletsShot.size() + " BULLETS");
+            // SHOW HUD
+            this.hud.show();
+            // WAITS
             Thread.sleep(10);
 
         }
@@ -120,6 +133,17 @@ public class GameManager implements KeyboardHandler {
         keyboard.addEventListener(moveARelease);
         keyboard.addEventListener(moveDPress);
         keyboard.addEventListener(moveDRelease);
+
+        KeyboardEvent eKeyPress = new KeyboardEvent();
+        eKeyPress.setKey(KEY_E);
+        eKeyPress.setKeyboardEventType(KeyboardEventType.KEY_PRESSED);
+
+        KeyboardEvent eKeyRelease = new KeyboardEvent();
+        eKeyRelease.setKey(KEY_E);
+        eKeyRelease.setKeyboardEventType(KeyboardEventType.KEY_RELEASED);
+
+        keyboard.addEventListener(eKeyPress);
+        keyboard.addEventListener(eKeyRelease);
     }
 
     @Override
@@ -128,6 +152,7 @@ public class GameManager implements KeyboardHandler {
         if(keyboardEvent.getKey() == KEY_S) {this.player.setSDir(1);}
         if(keyboardEvent.getKey() == KEY_A) {this.player.setADir(1);}
         if(keyboardEvent.getKey() == KEY_D) {this.player.setDDir(1);}
+        if(keyboardEvent.getKey() == KEY_E) {this.player.PressEKey();}
 
     }
 
@@ -137,5 +162,6 @@ public class GameManager implements KeyboardHandler {
         if(keyboardEvent.getKey() == KEY_S) {this.player.setSDir(0);}
         if(keyboardEvent.getKey() == KEY_A) {this.player.setADir(0);}
         if(keyboardEvent.getKey() == KEY_D) {this.player.setDDir(0);}
+        if(keyboardEvent.getKey() == KEY_E) {this.player.ReleaseEKey();}
     }
 }
