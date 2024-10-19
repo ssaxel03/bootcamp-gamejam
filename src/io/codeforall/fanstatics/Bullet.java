@@ -9,8 +9,8 @@ import java.util.ArrayList;
 public class Bullet implements Collideable{
 
     public final int SPEED = 30;
-    public final int BULLET_WIDTH = 20;
-    public final int BULLET_HEIGHT = 20;
+    public final int BULLET_WIDTH = 15;
+    public final int BULLET_HEIGHT = 15;
     private int damage;
     private Rectangle sprite;
     private BoxCollider boxCollider;
@@ -25,11 +25,11 @@ public class Bullet implements Collideable{
         this.damage = damage;
         // BULLET IMAGE
         this.sprite = new Rectangle(x, y, BULLET_WIDTH, BULLET_HEIGHT);
-        this.sprite.setColor(Color.GREEN);
+        this.sprite.setColor(new Color(255, 68, 221));
         this.sprite.fill();
         // BULLET COLLIDER
         this.boxCollider = new BoxCollider(x, y, BULLET_WIDTH, BULLET_HEIGHT);
-        this.boxCollider.getBounds().grow(10, 10);
+        this.boxCollider.getBounds().grow(5, 5);
         this.boxCollider.getBounds().translate(-50, -50);
         // BULLET DIRECTION
         this.normalizedDirection = normalizedDirection;

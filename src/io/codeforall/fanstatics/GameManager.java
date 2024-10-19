@@ -23,8 +23,8 @@ import static org.academiadecodigo.simplegraphics.keyboard.KeyboardEvent.*;
 
 public class GameManager implements KeyboardHandler {
 
-    public final static int SCREEN_WIDTH = 1920;
-    public final static int SCREEN_HEIGHT = 1080;
+    public final static int SCREEN_WIDTH = 2340;
+    public final static int SCREEN_HEIGHT = 2220;
     private Keyboard keyboard;
     private Rectangle screen;
     private CollisionManager collisionManager;
@@ -35,12 +35,13 @@ public class GameManager implements KeyboardHandler {
     private Background background;
     private HUD hud;
     private InputTest inputTest;
+    private int currentRoom;
 
     public GameManager() {
         // INITIALIZE IO RECEIVERS
         this.keyboardInit();
         // CREATE EMPTY SCREEN BEHIND BACKGROUND
-        this.screen = new Rectangle(0, 0, 7000, 7000);
+        this.screen = new Rectangle(0, 0, SCREEN_WIDTH * 3, SCREEN_HEIGHT * 3);
         this.screen.setColor(Color.BLACK);
         this.screen.fill();
         // CREATE EMPTY LIST OF ENEMIES
@@ -48,21 +49,21 @@ public class GameManager implements KeyboardHandler {
         this.bulletsShot = new ArrayList<>();
         this.interactables = new ArrayList<>();
         // CREATE BACKGROUND
-        this.background = new Background(enemies, interactables);
-        this.hud = new HUD();
+        this.background = new Background(enemies, interactables, this);
         this.inputTest = new InputTest(background);
         this.inputTest.init();
-
+        this.currentRoom = 0;
     }
 
     public void play() {
 
         this.player = new Player(bulletsShot);
         this.background.setPlayer(this.player);
+        this.inputTest.setPlayer(this.player);
+        enemies.add(new Enemy(10, 10, this.player, 10));
+        this.hud = new HUD();
         this.hud.setPlayer(this.player);
-        enemies.add(new Enemy(10, 10));
-
-        this.collisionManager = new CollisionManager(background, player, enemies, bulletsShot, interactables);
+        this.collisionManager = new CollisionManager(background, player, enemies, bulletsShot, interactables, this);
 
         try {
             this.gameLoop();
@@ -88,6 +89,14 @@ public class GameManager implements KeyboardHandler {
             Thread.sleep(10);
 
         }
+    }
+
+    public void incRoom() {
+        this.currentRoom++;
+    }
+
+    public int getRoom() {
+        return this.currentRoom;
     }
 
     public void keyboardInit() {
@@ -144,6 +153,9 @@ public class GameManager implements KeyboardHandler {
 
         keyboard.addEventListener(eKeyPress);
         keyboard.addEventListener(eKeyRelease);
+
+
+
     }
 
     @Override
@@ -153,7 +165,6 @@ public class GameManager implements KeyboardHandler {
         if(keyboardEvent.getKey() == KEY_A) {this.player.setADir(1);}
         if(keyboardEvent.getKey() == KEY_D) {this.player.setDDir(1);}
         if(keyboardEvent.getKey() == KEY_E) {this.player.PressEKey();}
-
     }
 
     @Override

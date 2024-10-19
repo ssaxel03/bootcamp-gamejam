@@ -10,17 +10,29 @@ public class Enemy extends Entity implements Collideable {
 
     private final EnemyController enemyController;
     private int[] position;
+    private int damage;
     private long deletionTimerMs;
     private long despawnTimeMs = 1500;
+    private Player player;
+    private final int baseReward = 100;
+    private final int maxBonus = 200;
+    private final long attackDelayMs = 400;
+    private long lastAttackMs;
 
-    public Enemy(int x, int y) {
-        super(x, y, 7, "Enemy");
+    public Enemy(int x, int y, Player player, int damage) {
+        super(x, y, 4, "Enemy");
         this.enemyController = new EnemyController(
                 new Rectangle(0, 0,
                         Entity.SPRITE_SIZE,
                         Entity.SPRITE_SIZE)
         );
         this.position = new int[]{0, 0};
+
+        this.player = player;
+
+        this.lastAttackMs = System.currentTimeMillis() - attackDelayMs;
+
+        this.damage = damage;
     }
 
     public void move(int[] translate) {
@@ -75,6 +87,7 @@ public class Enemy extends Entity implements Collideable {
     }
 
     private void die() {
+        this.player.incMoney(this.baseReward + ((int) Math.floor(Math.random() * this.maxBonus)));
         this.isDead = true;
         this.enemyController.getSprite().setColor(Color.BLACK);
         this.deletionTimerMs = System.currentTimeMillis();
@@ -87,6 +100,13 @@ public class Enemy extends Entity implements Collideable {
     public boolean isDespawnable() {
         return System.currentTimeMillis() - deletionTimerMs >= despawnTimeMs;
     }
+    public boolean canAttack() {
+        if(System.currentTimeMillis() - lastAttackMs >= attackDelayMs) {
+            lastAttackMs = System.currentTimeMillis();
+            return true;
+        }
+        return false;
+    }
 
     public int getPositionX() {
         return this.position[0];
@@ -98,5 +118,9 @@ public class Enemy extends Entity implements Collideable {
 
     public int getHealth() {
         return this.health;
+    }
+
+    public int getDamage() {
+        return this.damage;
     }
 }

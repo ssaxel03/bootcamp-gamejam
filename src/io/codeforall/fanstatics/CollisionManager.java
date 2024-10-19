@@ -13,15 +13,15 @@ public class CollisionManager {
     private ArrayList<Enemy> enemies;
     private ArrayList<Bullet> bulletsShot;
     private ArrayList<Interactable> interactables;
-    private Background background;
-    public Player player;
+    private Player player;
+    private GameManager gameManager;
 
-    public CollisionManager(Background background, Player player, ArrayList<Enemy> enemies, ArrayList<Bullet> bulletsShot, ArrayList<Interactable> interactables) {
-        this.background = background;
+    public CollisionManager(Background background, Player player, ArrayList<Enemy> enemies, ArrayList<Bullet> bulletsShot, ArrayList<Interactable> interactables, GameManager gameManager) {
         this.player = player;
         this.enemies = enemies;
         this.bulletsShot = bulletsShot;
         this.interactables = interactables;
+        this.gameManager = gameManager;
     }
 
     public void checkCollisions() {
@@ -35,7 +35,7 @@ public class CollisionManager {
             // System.out.println("CHECKING COLLISIONS FOR " + this.player.getName() + " AND " + enemy.getName());
             // CHECK IF EACH ENEMY COLLIDED WITH THE PLAYER
             if (this.player.getBounds().intersects(enemy.getBounds())) {
-                System.out.println("ENEMY COLLIDED WITH PLAYER");
+                // System.out.println("ENEMY COLLIDED WITH PLAYER");
                 this.player.onCollision(enemy);
                 enemy.onCollision(this.player);
             }
@@ -58,26 +58,23 @@ public class CollisionManager {
         }
 
         for (Interactable interactable : interactables) {
-           if(interactable.getInteractionCollider().getBounds().intersects(this.player.getBounds())) {
-               System.out.println("COLLIDED WITH INTERACTION COLLIDER");
-               interactable.showTip();
+           if(interactable.getInteractionCollider().getBounds().intersects(this.player.getBounds()) && interactable.canCollide()) {
+               // System.out.println("COLLIDED WITH INTERACTION COLLIDER");
+               if(!interactable.isOpened()) {
+                   interactable.showTip();
+               }
                if(player.getEKey() && player.getMoney() > interactable.getPrice()) {
-                   System.out.println("PLAYER IS INTERACTING");
-                   interactable.interact();
+                   // System.out.println("PLAYER IS INTERACTING");
+                   interactable.interact(player);
                    player.pay(interactable.getPrice());
+                   if(interactable instanceof Door) {
+                       gameManager.incRoom();
+                   }
                }
            } else {
                interactable.hideTip();
            }
         }
-    }
-
-    public boolean isInside(int clickPositionX, int clickPositionY) {
-
-        Rectangle player = new Rectangle(clickPositionX, clickPositionY, Entity.SPRITE_SIZE, Entity.SPRITE_SIZE);
-
-        return this.background.getBoxCollider().contains(player);
-
     }
 
 }

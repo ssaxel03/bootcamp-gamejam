@@ -37,6 +37,7 @@ public class Gun {
         if(ammo > 0 && System.currentTimeMillis() - lastShotTimerMs >= gunType.getFireRateDelayMs()) {
             bulletsShot.add(new Bullet(gunType.getDamage(), x, y, normalizedDirection));
             this.lastShotTimerMs = System.currentTimeMillis();
+            this.ammo--;
         }
     }
 
@@ -45,14 +46,22 @@ public class Gun {
         // IF THE PLAYER IS NOT RELOADING IT STARTS RELOADING AND WITH IT A START TIME FOR THE RELOAD IS SET
         if(!reloading) {
             this.reloading = true;
+            this.ammo += ammo;
             this.reloadTimerMs = System.currentTimeMillis();
-            return;
         }
         // IF THE PLAYER IS ALREADY RELOADING AND HAS BEEN DOING IT FOR THE TIME REQUIRED BY THE WEAPON FINISHES RELOADING PROCESS
         if(System.currentTimeMillis() - this.reloadTimerMs >= 500 /*GUN TYPE*/) {
             this.reloading = false;
             this.ammo = ammo;
         }
+    }
+
+    public boolean isReloaded() {
+        if(System.currentTimeMillis() - this.reloadTimerMs >= gunType.getReloadTimeMs() || !reloading) {
+            this.reloading = false;
+            return true;
+        }
+        return false;
     }
 
     // Getters
@@ -66,6 +75,9 @@ public class Gun {
 
     public GunType getGunType() {
         return this.gunType;
+    }
+    public void setGunType(GunType gunType) {
+        this.gunType = gunType;
     }
 }
 

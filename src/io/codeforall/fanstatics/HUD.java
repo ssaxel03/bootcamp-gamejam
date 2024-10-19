@@ -79,7 +79,11 @@ public class HUD {
         // GUN BULLETS
         pistolIcon = new Picture(265, 185, pistolIconFilePath);
         rifleIcon = new Picture(265, 185, rifleIconFilePath);
+        rifleIcon.draw();
         shotgunIcon = new Picture(265, 185, shotgunIconFilePath);
+        shotgunIcon.draw();
+        pistolIcon.draw();
+
         gunBulletsOverlay = new Picture(300, 185, gunBulletsOverlayFilePath);
         gunBulletsOverlay.draw();
         gunBulletsOverlay.grow(-33, 0);
@@ -91,16 +95,16 @@ public class HUD {
     public void setPlayer(Player player) {
         this.player = player;
         // HEALTH
-        this.deltaHealth = player.getHealth();
+        this.deltaHealth = 0;
         this.lastHealth = player.getHealth();
         // MONEY
-        this.deltaMoney = player.getMoney();
+        this.deltaMoney = 0;
         this.lastMoney = player.getMoney();
         // PLAYER BULLETS
-        this.deltaPlayerBullets = player.getBullets();
+        this.deltaPlayerBullets = 0;
         this.lastPlayerBullets = player.getBullets();
         // GUN BULLETS
-        this.deltaGunBullets = player.getGunBullets();
+        this.deltaGunBullets = 0;
         this.lastGunBullets = player.getGunBullets();
     }
 
@@ -108,19 +112,16 @@ public class HUD {
 
         switch(player.getGunType()) {
             case PISTOL:
+                this.pistolIcon.delete();
                 this.pistolIcon.draw();
-                this.rifleIcon.delete();
-                this.shotgunIcon.delete();
                 break;
             case RIFLE:
-                this.pistolIcon.delete();
+                this.rifleIcon.delete();
                 this.rifleIcon.draw();
-                this.shotgunIcon.draw();
                 break;
             case SHOTGUN:
-                this.pistolIcon.delete();
-                this.rifleIcon.delete();
-                this.pistolIcon.draw();
+                this.shotgunIcon.delete();
+                this.shotgunIcon.draw();
                 break;
         }
 
@@ -133,18 +134,71 @@ public class HUD {
         this.deltaGunBullets = player.getGunBullets() - this.lastGunBullets;
         this.lastGunBullets = player.getGunBullets();
 
-        playerHealthOverlay.grow(this.deltaHealth * 3 == -playerHealthOverlay.getWidth() ? this.deltaHealth * 3 / 2 + 1 : this.deltaHealth * 3 / 2, 0);
-        playerHealthOverlay.translate(this.deltaHealth * 3 == -playerHealthOverlay.getWidth() ? this.deltaHealth * 3 / 2 + 1 : this.deltaHealth * 3 / 2, 0);
+        int changeHealth = deltaHealth * 3 / 2;
+        if(changeHealth >= 300 - playerHealthOverlay.getWidth() / 2) {
+            changeHealth = (300 - playerHealthOverlay.getWidth()) / 2;
+        }
+        if(changeHealth * 3 <= -playerHealthOverlay.getWidth() / 2) {
+            changeHealth = -playerHealthOverlay.getWidth() / 2 + 1;
+        }
 
-        playerMoneyOverlay.grow(this.deltaMoney / 3 == -playerMoneyOverlay.getWidth() ? this.deltaMoney / 3 / 2 + 1 : this.deltaMoney / 3 / 2, 0);
-        playerMoneyOverlay.translate(this.deltaMoney / 3 == -playerMoneyOverlay.getWidth() ? this.deltaMoney / 3 / 2 + 1 : this.deltaMoney / 3 / 2, 0);
+        playerHealthOverlay.grow(changeHealth, 0);
+        playerHealthOverlay.translate(changeHealth, 0);
 
-        playerBulletsOverlay.grow(this.deltaPlayerBullets * 5 == -playerBulletsOverlay.getWidth() ? this.deltaPlayerBullets * 5 / 2 + 1 : this.deltaPlayerBullets * 5 / 2, 0);
-        playerMoneyOverlay.translate(this.deltaPlayerBullets * 5 == -playerBulletsOverlay.getWidth() ? this.deltaPlayerBullets * 5 / 2 + 1 : this.deltaPlayerBullets * 5 / 2, 0);
+        int changeMoney = (int) (this.deltaMoney / 3.33 / 2);
+        if(changeMoney >= 300 - playerMoneyOverlay.getWidth() / 2) {
+            changeMoney = (300 - playerMoneyOverlay.getWidth()) / 2;
+        }
+        if(changeMoney <= -playerMoneyOverlay.getWidth() / 2) {
+            changeMoney = (-playerMoneyOverlay.getWidth() / 2) + 1;
+        }
 
-        gunBulletsOverlay.grow(this.deltaGunBullets * 10 == -gunBulletsOverlay.getWidth() ? this.deltaGunBullets * 10 + 1 : this.deltaGunBullets * 10 / 2, 0);
-        gunBulletsOverlay.translate(this.deltaGunBullets * 10 == -gunBulletsOverlay.getWidth() ? this.deltaGunBullets * 10 + 1 : this.deltaGunBullets * 10 / 2, 0);
+        playerMoneyOverlay.grow(changeMoney, 0);
+        playerMoneyOverlay.translate(changeMoney, 0);
 
+        int changePlayerBullets = (int) (this.deltaPlayerBullets * 1.7 / 2);
+        if(changePlayerBullets >= 100 - playerBulletsOverlay.getWidth() / 2) {
+            changePlayerBullets = (100 - playerBulletsOverlay.getWidth()) / 2;
+        }
+        if(changePlayerBullets <= -playerBulletsOverlay.getWidth() / 2) {
+            changePlayerBullets = -playerBulletsOverlay.getWidth() / 2 + 1;
+        }
 
+        playerBulletsOverlay.grow(changePlayerBullets, 0);
+        playerMoneyOverlay.translate(changePlayerBullets, 0);
+
+        int changeGunBullets = (int) (this.deltaGunBullets * 3.33 / 2);
+        if(changeGunBullets >= 100 - gunBulletsOverlay.getWidth() / 2) {
+            changeGunBullets = (100 - gunBulletsOverlay.getWidth() / 2);
+        }
+        if(changeGunBullets <= -gunBulletsOverlay.getWidth() / 2) {
+            changeGunBullets = -gunBulletsOverlay.getWidth() / 2 + 1;
+        }
+
+        gunBulletsOverlay.grow(changeGunBullets, 0);
+        gunBulletsOverlay.translate(changeGunBullets, 0);
+
+        playerHealthOverlay.delete();
+        playerHealthOverlay.draw();
+        playerHealthFrame.delete();
+        playerHealthFrame.draw();
+
+        playerMoneyOverlay.delete();
+        playerMoneyOverlay.draw();
+        playerMoneyFrame.delete();
+        playerMoneyFrame.draw();
+
+        playerBulletsOverlay.delete();
+        playerBulletsOverlay.draw();
+        playerBulletsFrame.delete();
+        playerBulletsFrame.draw();
+
+        gunBulletsOverlay.delete();
+        gunBulletsOverlay.draw();
+        gunBulletsFrame.delete();
+        gunBulletsFrame.draw();
+
+        playerFace.delete();
+        playerFace.draw();
     }
 }

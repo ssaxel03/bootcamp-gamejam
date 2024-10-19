@@ -17,7 +17,6 @@ public class Background {
     private Picture spriteRoom0;
     private Picture spriteRoom1;
     private Picture spriteRoom2;
-    private Door spriteDoor1;
     private final String room0SpriteFilePath = "assets/room0.png";
     private final String room1SpriteFilePath = "assets/room1.png";
     private final String room2SpriteFilePath = "assets/room2.png";
@@ -27,11 +26,13 @@ public class Background {
     private ArrayList<Enemy> enemies;
     private ArrayList<Interactable> interactables;
     private Player player;
+    private GameManager gameManager;
+    private int currentRoom;
 
-    public Background(ArrayList<Enemy> enemies, ArrayList<Interactable> interactables) {
+    public Background(ArrayList<Enemy> enemies, ArrayList<Interactable> interactables, GameManager gameManager) {
         this.boxCollider = new Polygon(
-                new int[]{65, 1490, 1490, 1860, 1860, 4100, 4100, 3400, 3400, 4400, 4400, 260, 260, 2730, 2730, 1860, 1860, 1500, 1500, 65},
-                new int[]{2000, 2000, 1210, 1210, 2000, 2000, -420, -420, -800, -800, -2430, -2430, -800, -800, -430, -430, 570, 570, 70, 70},
+                new int[]{205, 1590, 1590, 2010, 2010, 4200, 4200, 3500, 3500, 4500, 4500, 410, 410, 2880, 2880, 2010, 2010, 1600, 1600, 205},
+                new int[]{2100, 2100, 1310, 1310, 2100, 2100, -320, -320, -700, -700, -2330, -2330, -700, -700, -330, -330, 670, 670, 170, 170},
                 20);
 
         this.offSet = new int[] {0, 0};
@@ -39,24 +40,48 @@ public class Background {
         this.spriteRoom0 = new Picture(0, 0, room0SpriteFilePath);
         this.spriteRoom0.draw();
         this.spriteRoom1 = new Picture(1680, -630, room1SpriteFilePath);
-        this.spriteRoom1.draw();
-        this.spriteRoom2 = new Picture(197, -2504, room2SpriteFilePath);
-        this.spriteRoom2.draw();
 
-        interactables.add(new Door(1627, 525, Rooms.BASIC));
+        this.spriteRoom2 = new Picture(197, -2504, room2SpriteFilePath);
+
+        interactables.add(new Door(1580, 525, Rooms.BASIC));
+        interactables.add(new Door(2720, -630, Rooms.FINALE));
+        interactables.add(new Box(500, 500, BoxType.VERTICAL));
+
+        System.out.println(interactables.size());
+        /*
         for (Interactable interactable : interactables) {
+            if(interactable instanceof Box) {
+                ((Box) interactable).drawOpened();
+            }
             interactable.draw();
         }
+         */
 
-        // this.sprite.setColor(Color.DARK_GRAY);
-        // this.sprite.fill();
+        interactables.get(0).draw();
+        interactables.get(2).draw();
 
         this.enemies = enemies;
         this.interactables = interactables;
+        this.gameManager = gameManager;
+        this.currentRoom = 0;
 
     }
 
     public void moveTo() {
+
+        if(this.currentRoom != gameManager.getRoom()) {
+            this.currentRoom = gameManager.getRoom();
+            switch (currentRoom) {
+                case 1:
+                    this.spriteRoom1.draw();
+                    this.interactables.get(1).draw();
+                    this.player.draw();
+                    break;
+                case 2:
+                    this.spriteRoom2.draw();
+            }
+        }
+
         // GET DIRECTION OF MOVEMENT FROM PLAYER
         int directionX = this.player.getADir() - this.player.getDDir();
         int directionY = this.player.getWDir() - this.player.getSDir();
