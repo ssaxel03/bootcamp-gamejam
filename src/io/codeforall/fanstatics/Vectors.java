@@ -5,8 +5,8 @@ public class Vectors {
     public static float[] getNormalizedDirection(int directionX, int directionY) {
 
         int length = (int) Vectors.getVectorLength(directionX, directionY);
-
-        System.out.println("LENGTH " + length);
+        // DEBUG
+        // System.out.println("LENGTH " + length);
 
         return new float[] { (float)directionX / length, (float)directionY / length};
     }

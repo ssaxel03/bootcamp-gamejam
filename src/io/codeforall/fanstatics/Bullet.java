@@ -9,28 +9,35 @@ import java.util.ArrayList;
 public class Bullet implements Collideable{
 
     public final int SPEED = 30;
-    public final int BULLET_WIDTH = 50;
-    public final int BULLET_HEIGHT = 5;
+    public final int BULLET_WIDTH = 15;
+    public final int BULLET_HEIGHT = 15;
     private int damage;
     private Rectangle sprite;
     private BoxCollider boxCollider;
     private float[] normalizedDirection;
 
-    private final long despawnTimeMs = 1000;
+    private final long despawnTimeMs = 3000;
     private final long spawnTimeMs;
 
     // Constructor
     public Bullet(int damage, int x, int y, float[] normalizedDirection) {
+        // BULLET DAMAGE
         this.damage = damage;
+        // BULLET IMAGE
         this.sprite = new Rectangle(x, y, BULLET_WIDTH, BULLET_HEIGHT);
-        this.sprite.setColor(Color.GREEN);
+        this.sprite.setColor(new Color(255, 68, 221));
         this.sprite.fill();
+        // BULLET COLLIDER
         this.boxCollider = new BoxCollider(x, y, BULLET_WIDTH, BULLET_HEIGHT);
-        this.boxCollider.getBounds().grow(100, 100);
+        this.boxCollider.getBounds().grow(5, 5);
+        this.boxCollider.getBounds().translate(-50, -50);
+        // BULLET DIRECTION
         this.normalizedDirection = normalizedDirection;
+        // BULLET SPAWN TIME
         this.spawnTimeMs = System.currentTimeMillis();
-        System.out.println(this.spawnTimeMs);
-        System.out.println("BULLET CREATED");
+        // DEBUG
+        // System.out.println(this.spawnTimeMs);
+        // System.out.println("BULLET CREATED");
     }
 
     // Method to move the bullet

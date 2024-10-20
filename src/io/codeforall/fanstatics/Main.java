@@ -1,11 +1,15 @@
 package src.io.codeforall.fanstatics;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Hello World");
 
-        GameManager game = new GameManager();
-
-        game.play();
+        Menu menu = new Menu();
+        menu.run();
     }
 }

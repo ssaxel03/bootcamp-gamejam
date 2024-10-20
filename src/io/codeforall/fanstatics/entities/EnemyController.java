@@ -13,6 +13,10 @@ public class EnemyController extends EntityController{
         this.sprite.fill();
     }
 
+    public Rectangle getSprite() {
+        return this.sprite;
+    }
+
     @Override
     public void move(int[] translate) {
         this.sprite.translate(translate[0], translate[1]);

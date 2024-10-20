@@ -1,29 +1,44 @@
 package src.io.codeforall.fanstatics.entities;
 
+import org.academiadecodigo.simplegraphics.graphics.Color;
 import org.academiadecodigo.simplegraphics.graphics.Rectangle;
 import src.io.codeforall.fanstatics.Bullet;
 import src.io.codeforall.fanstatics.Collideable;
 import src.io.codeforall.fanstatics.Vectors;
 
-public class Enemy extends Entity implements Collideable{
+public class Enemy extends Entity implements Collideable {
 
     private final EnemyController enemyController;
     private int[] position;
+    private int damage;
+    private long deletionTimerMs;
+    private long despawnTimeMs = 1500;
+    private Player player;
+    private final int baseReward = 100;
+    private final int maxBonus = 200;
+    private final long attackDelayMs = 400;
+    private long lastAttackMs;
 
-    public Enemy(int x, int y) {
-        super(x, y, 7, "Enemy");
+    public Enemy(int x, int y, Player player, int damage) {
+        super(x, y, 4, "Enemy");
         this.enemyController = new EnemyController(
                 new Rectangle(0, 0,
                         Entity.SPRITE_SIZE,
                         Entity.SPRITE_SIZE)
         );
-        this.position = new int[] {0, 0};
+        this.position = new int[]{0, 0};
+
+        this.player = player;
+
+        this.lastAttackMs = System.currentTimeMillis() - attackDelayMs;
+
+        this.damage = damage;
     }
 
     public void move(int[] translate) {
         this.enemyController.move(translate);
         this.boxCollider.move(translate);
-        this.position = new int[] { position[0] + translate[0], position[1] + translate[1] };
+        this.position = new int[]{position[0] + translate[0], position[1] + translate[1]};
     }
 
     public void move(Player player) {
@@ -36,9 +51,9 @@ public class Enemy extends Entity implements Collideable{
         // System.out.println("DIRECTION y " + directionY);
 
         // CHECKS IF WE ARE CLOSE ENOUGH TO THE PLAYER SO THAT OUR NORMALIZED VECTOR TIMES SPEED ARE GOING TO SURPASS THE GOAL POSITION
-        if(Vectors.getVectorLength(directionX, directionY) < super.speed) {
+        if (Vectors.getVectorLength(directionX, directionY) < super.speed) {
             // MOVES JUST THE AMOUNT NEEDED TO REACH THE PLAYER
-            this.move(new int[] {directionX, directionY});
+            this.move(new int[]{directionX, directionY});
         } else {
             // MOVES THE MAXIMUM AMOUNT ALLOWED BY THE SPEED ATTRIBUTE OF THE ENEMY
             float[] normalizedArray = Vectors.getNormalizedDirection(directionX, directionY);
@@ -47,7 +62,7 @@ public class Enemy extends Entity implements Collideable{
             // System.out.println("NORMALIZED ARRAY X " + normalizedArray[0] + " Y " + normalizedArray[1]);
 
             // CREATES THE MOVE ARRAY ACCORDING TO THE ENEMY SPEED
-            int[] moveArray = new int[] {(int) (normalizedArray[0] * super.speed), (int) (normalizedArray[1] * super.speed)};
+            int[] moveArray = new int[]{(int) (normalizedArray[0] * super.speed), (int) (normalizedArray[1] * super.speed)};
 
             // DEBUG
             // System.out.println("MOVE ARRAY X " + moveArray[0] + " Y " + moveArray[1]);
@@ -60,14 +75,38 @@ public class Enemy extends Entity implements Collideable{
     @Override
     public void onCollision(Collideable col) {
         // ENEMY COLLISION METHOD
-
-        System.out.println("Enemy collided with " + col.getName());
-
+        // DEBUG
+        // System.out.println("Enemy collided with " + col.getName());
         switch(col.getName()) {
             case "Bullet" -> this.hit(((Bullet) col).getDamage());
         }
 
-        return;
+        if (this.health <= 0) {
+            this.die();
+        }
+    }
+
+    private void die() {
+        this.player.incBullets(7);
+        this.player.incMoney(this.baseReward + ((int) Math.floor(Math.random() * this.maxBonus)));
+        this.isDead = true;
+        this.enemyController.getSprite().setColor(Color.BLACK);
+        this.deletionTimerMs = System.currentTimeMillis();
+    }
+
+    public void deleteSprite() {
+        this.enemyController.getSprite().delete();
+    }
+
+    public boolean isDespawnable() {
+        return System.currentTimeMillis() - deletionTimerMs >= despawnTimeMs;
+    }
+    public boolean canAttack() {
+        if(System.currentTimeMillis() - lastAttackMs >= attackDelayMs) {
+            lastAttackMs = System.currentTimeMillis();
+            return true;
+        }
+        return false;
     }
 
     public int getPositionX() {
@@ -80,5 +119,9 @@ public class Enemy extends Entity implements Collideable{
 
     public int getHealth() {
         return this.health;
+    }
+
+    public int getDamage() {
+        return this.damage;
     }
 }
