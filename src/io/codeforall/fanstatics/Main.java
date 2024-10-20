@@ -9,9 +9,7 @@ import java.awt.event.ActionListener;
 public class Main {
     public static void main(String[] args) {
 
-
-        GameManager game = new GameManager();
-
-        game.play();
+        Menu menu = new Menu();
+        menu.run();
     }
 }

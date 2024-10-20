@@ -237,4 +237,8 @@ public class Player extends Entity implements Collideable {
     public void releaseRKey() {
         this.rKey = false;
     }
+
+    public void incBullets(int amount) {
+        this.bullets += amount;
+    }
 }

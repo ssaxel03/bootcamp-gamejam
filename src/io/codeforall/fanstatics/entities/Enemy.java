@@ -87,6 +87,7 @@ public class Enemy extends Entity implements Collideable {
     }
 
     private void die() {
+        this.player.incBullets(7);
         this.player.incMoney(this.baseReward + ((int) Math.floor(Math.random() * this.maxBonus)));
         this.isDead = true;
         this.enemyController.getSprite().setColor(Color.BLACK);

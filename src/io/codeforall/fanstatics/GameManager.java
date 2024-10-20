@@ -36,6 +36,8 @@ public class GameManager implements KeyboardHandler {
     private HUD hud;
     private InputTest inputTest;
     private int currentRoom;
+    private long spawnTimer;
+    private final long spawnDelay = 1000;
 
     public GameManager() {
         // INITIALIZE IO RECEIVERS
@@ -53,6 +55,7 @@ public class GameManager implements KeyboardHandler {
         this.inputTest = new InputTest(background);
         this.inputTest.init();
         this.currentRoom = 0;
+        this.spawnTimer = System.currentTimeMillis() - this.spawnDelay;
     }
 
     public void play() {
@@ -73,7 +76,19 @@ public class GameManager implements KeyboardHandler {
     }
 
     public void gameLoop() throws InterruptedException {
-        while (true) {
+        while (player.getHealth() > 0) {
+
+            if(System.currentTimeMillis() - spawnTimer >= spawnDelay) {
+                for (int i = 0; i < 5; i++) {
+                    int x = (int) (Math.random() * 500) + player.getPosition()[0];
+                    int y = (int) (Math.random() * 500) + player.getPosition()[1];
+
+
+                    enemies.add(new Enemy(x, y, player, 7));
+                }
+            }
+
+
             // MOVE THE BACKGROUND TO SIMULATE PLAYER MOVEMENT WITH CAMERA FOLLOW
             this.background.moveTo();
             // PLAYER SHOOTS
@@ -89,6 +104,8 @@ public class GameManager implements KeyboardHandler {
             Thread.sleep(10);
 
         }
+
+        GameOver gameOver = new GameOver();
     }
 
     public void incRoom() {
