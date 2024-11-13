@@ -1,5 +1,5 @@
 # Controls
-<p>WASD - Move<br>R - Reload<br>SPACE - SUBMIT MENU OPTIONS<br>UPDOWN - SELECT MENU OPTIONS</p>
+<p>WASD - Move<br>R - Reload<br>SPACE - Submit menu options<br>UPDOWN - Select menu options</p>
 
 # Summary
 <p>In a world overrun by relentless zombies, Necro Nibbler thrusts players into a tense, top-down shooter experience where survival hinges on resource management and strategic decision-making. As the protagonist, you navigate through a sprawling, dilapidated facility teeming with undead foes, each room presenting a new challenge and a fresh horde to dispatch. The game blends fast-paced action with a need to conserve ammunition and funds, forcing players to balance aggressive combat with thoughtful resource allocation. Each encounter requires a keen eye for both the undead and the dwindling supplies at your disposal, as every bullet counts and every dollar can be the difference between life and death.
